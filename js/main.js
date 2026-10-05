@@ -1,7 +1,7 @@
 "use strict";
 /*
  * Laboration 5 - Studentkortsgenerator
- * Namn: DITT NAMN
+ * Namn: Tilda Öström Linde
  */
 
 // Hämta element från DOM
@@ -33,11 +33,23 @@ let history = [];
  * @returns {boolean}
  */
 function validateForm() {
+    errors = [];
     // Kontrollera formulärets obligatoriska fält
 
+    if (fullnameInput.value === "") {
+        errors.push("Du måste fylla i ditt namn.");
+    }
+    if (emailInput.value === "") {
+        errors.push("Du måste fylla i din e-postadress.");
+    }
+    if (phoneInput.value === "") {
+        errors.push("Du måste fylla i ditt telefonnummer.");
+    }
     // Visa eventuella felmeddelanden
+    displayErrors();
 
     // Returnera resultatet (true eller false) av valideringen
+    return errors.length === 0;
 }
 
 
@@ -45,10 +57,20 @@ function validateForm() {
  * Visar felmeddelanden på sidan.
  */
 function displayErrors() {
-    // Rensa tidigare felmeddelanden
 
-    // Skriv ut aktuella felmeddelanden till DOM
+    // Rensa tidigare felmeddelanden
+    errorlist.innerHTML = "";
+
+     // Skriv ut aktuella felmeddelanden till DOM
+    errors.forEach (function(error){
+        const li =document.createElement("li");
+        li.textContent = error;
+        errorlist.appendChild(li);
+    });
 }
+
+   
+
 
 
 /**
@@ -56,8 +78,13 @@ function displayErrors() {
  */
 function createStudentCard() {
     // Hämta information från formuläret
+    const fullname = fullnameInput.value;
+    const email = emailInput.value;
+    const phone = phoneInput.value;
+    const font = fontSelect.value;
 
     // Uppdatera studentkortet
+    
 
     // Lägg till studentkortet i historiken
 
@@ -116,14 +143,28 @@ function deleteHistory() {
 // Eventlyssnare
 
 // När formuläret skickas:
-// - validera inmatningen
-// - skapa studentkort om valideringen lyckas
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+});
+    // - validera inmatningen
+    
+    // - skapa studentkort om valideringen lyckas
+
+
+
 
 
 // När användaren klickar på "Rensa"
+clearButton.addEventListener("click", function (event){
+
+})
 
 
 // När användaren klickar på "Radera historik"
+deleteHistoryButton.addEventListener("click", function (event){
+
+})
 
 
 // När sidan laddas:
