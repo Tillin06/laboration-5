@@ -36,13 +36,13 @@ function validateForm() {
     errors = [];
     // Kontrollera formulärets obligatoriska fält
 
-    if (fullnameInput.value === "") {
+    if (fullnameInput.value.trim() === "") {
         errors.push("Du måste fylla i ditt namn.");
     }
-    if (emailInput.value === "") {
+    if (emailInput.value.trim() === "") {
         errors.push("Du måste fylla i din e-postadress.");
     }
-    if (phoneInput.value === "") {
+    if (phoneInput.value.trim() === "") {
         errors.push("Du måste fylla i ditt telefonnummer.");
     }
     // Visa eventuella felmeddelanden
@@ -59,13 +59,13 @@ function validateForm() {
 function displayErrors() {
 
     // Rensa tidigare felmeddelanden
-    errorlist.innerHTML = "";
+    errorList.innerHTML = "";
 
      // Skriv ut aktuella felmeddelanden till DOM
     errors.forEach (function(error){
         const li =document.createElement("li");
         li.textContent = error;
-        errorlist.appendChild(li);
+        errorList.appendChild(li);
     });
 }
 
@@ -98,9 +98,11 @@ function createStudentCard() {
         email: email,
         phone: phone,
         font: font
-    })
+    });
 
     // Spara och uppdatera historiken
+    saveHistory();
+    renderHistory();
 }
 
 
@@ -109,6 +111,12 @@ function createStudentCard() {
  */
 function saveHistory() {
     // Spara history i localStorage
+    const studentHistory = {
+        name:fullnameInput.value,
+        email:emailInput.value,
+        phone:phoneInput.value,
+        font:fontSelect.value
+    }
 }
 
 
@@ -127,8 +135,17 @@ function loadHistory() {
  */
 function renderHistory() {
     // Rensa tidigare visad historik
+    historySection.innerHTML = "";
 
     // Skriv ut innehållet i history till DOM
+    history.forEach(function(student) {
+        const studentCard = document.createElement("div");
+
+        studentCard.innerHTML = `Namn: ${student.name} <br> Email: ${student.email} <br> Telefonnummer: ${student.phone} <br> Font: ${student.font}`;
+        
+        historySection.appendChild(studentCard);
+    
+    });
 }
 
 
@@ -155,8 +172,15 @@ function clearForm() {
  */
 function deleteHistory() {
     // Radera sparad historik
+    localStorage.removeItem("studentHistory");
 
     // Uppdatera history och visningen på sidan
+    studentHistory = [];
+
+    renderHistory();
+    previewFullname.textContent = "";
+    previewEmail.textContent = "";
+    previewPhone.textContent = "";
 }
 
 
@@ -174,13 +198,13 @@ form.addEventListener("submit", function(event) {
 });
 
 // När användaren klickar på "Rensa"
-clearButton.addEventListener("click", function (event){
+clearButton.addEventListener("click", function (){
     clearForm();
 });
 
 
 // När användaren klickar på "Radera historik"
-deleteHistoryButton.addEventListener("click", function (event){
+deleteHistoryButton.addEventListener("click", function (){
     deleteHistory();
 
 })
@@ -188,3 +212,5 @@ deleteHistoryButton.addEventListener("click", function (event){
 
 // När sidan laddas:
 // - läs in och visa eventuell tidigare historik
+loadHistory();
+renderHistory();
