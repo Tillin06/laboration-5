@@ -34,7 +34,7 @@ let history = [];
  */
 function validateForm() {
     errors = [];
-    // Kontrollera formulärets obligatoriska fält
+    // Kontrollera formulärets obligatoriska fält och ge felmeddelande om något saknas
 
     if (fullnameInput.value.trim() === "") {
         errors.push("Du måste fylla i ditt namn.");
@@ -61,7 +61,7 @@ function displayErrors() {
     // Rensa tidigare felmeddelanden
     errorList.innerHTML = "";
 
-     // Skriv ut aktuella felmeddelanden till DOM
+     // Skriv ut aktuella felmeddelanden till DOM i en lista
     errors.forEach (function(error){
         const li =document.createElement("li");
         li.textContent = error;
@@ -110,13 +110,9 @@ function createStudentCard() {
  * Sparar historiken i localStorage.
  */
 function saveHistory() {
-    // Spara history i localStorage
-    const studentHistory = {
-        name:fullnameInput.value,
-        email:emailInput.value,
-        phone:phoneInput.value,
-        font:fontSelect.value
-    }
+    // Spara history i localStorage och gör om till JSON string
+    localStorage.setItem("studentHistory", JSON.stringify(history));
+
 }
 
 
@@ -125,8 +121,12 @@ function saveHistory() {
  */
 function loadHistory() {
     // Hämta eventuell sparad historik
+    const savedHistory = localStorage.getItem("studentHistory");
 
-    // Uppdatera history
+    // Uppdatera history om det finns sparad historik och gör om JSON till array
+    if (savedHistory) {
+        history = JSON.parse(savedHistory);
+    }
 }
 
 
@@ -138,14 +138,20 @@ function renderHistory() {
     historySection.innerHTML = "";
 
     // Skriv ut innehållet i history till DOM
-    history.forEach(function(student) {
+    for (let i = 0; i < history.length; i++) {
+        const student = history[i];
         const studentCard = document.createElement("div");
 
         studentCard.innerHTML = `Namn: ${student.name} <br> Email: ${student.email} <br> Telefonnummer: ${student.phone} <br> Font: ${student.font}`;
-        
+        //Styling av studentkort
+        studentCard.style.border = "1px solid #666666";
+        studentCard.style.margin = "10px";
+        studentCard.style.borderRadius = "5px";
+        studentCard.style.padding = "10px";
+
         historySection.appendChild(studentCard);
     
-    });
+    }
 }
 
 
@@ -161,7 +167,7 @@ function clearForm() {
     previewPhone.textContent = "";
 
     // Rensa eventuella felmeddelanden
-    errors= [];
+    errors = [];
     displayErrors();
 
 }
@@ -175,7 +181,7 @@ function deleteHistory() {
     localStorage.removeItem("studentHistory");
 
     // Uppdatera history och visningen på sidan
-    studentHistory = [];
+    history = [];
 
     renderHistory();
     previewFullname.textContent = "";
